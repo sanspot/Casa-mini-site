@@ -1,0 +1,745 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Casa</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+    :root {
+      --bg:        #F7F5F2;
+      --surface:   #FFFFFF;
+      --border:    #E8E4DF;
+      --border-md: #D5CFC8;
+      --text:      #1A1714;
+      --muted:     #7A736C;
+      --hint:      #B0A89F;
+      --accent:    #8B6E52;
+      --accent-bg: #F2EDE7;
+      --danger-bg: #FEF2F2;
+      --danger:    #B91C1C;
+      --warn-bg:   #FFFBEB;
+      --warn:      #92400E;
+      --success-bg:#F0FDF4;
+      --success:   #166534;
+    }
+
+    body {
+      font-family: 'DM Sans', -apple-system, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+      min-height: 100vh;
+    }
+
+    /* ── Nav ── */
+    nav {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: rgba(247,245,242,0.92);
+      backdrop-filter: blur(8px);
+      border-bottom: 1px solid var(--border);
+      padding: 0 32px;
+      height: 56px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .nav-logo {
+      font-family: 'Cormorant Garamond', Georgia, serif;
+      font-size: 1.4rem;
+      font-weight: 500;
+      color: var(--text);
+      text-decoration: none;
+      letter-spacing: 0.02em;
+      cursor: pointer;
+    }
+
+    .nav-breadcrumb {
+      font-size: 0.8rem;
+      color: var(--muted);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .nav-breadcrumb span { color: var(--hint); }
+    .nav-breadcrumb a { color: var(--muted); text-decoration: none; cursor: pointer; }
+    .nav-breadcrumb a:hover { color: var(--text); }
+
+    /* ── Pages ── */
+    .page { display: none; }
+    .page.active { display: block; }
+
+    /* ── Container ── */
+    .container {
+      max-width: 1160px;
+      margin: 0 auto;
+      padding: 0 32px;
+    }
+
+    /* ── Home header ── */
+    .home-header {
+      padding: 72px 0 56px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .home-header h1 {
+      font-family: 'Cormorant Garamond', Georgia, serif;
+      font-size: clamp(3rem, 6vw, 5rem);
+      font-weight: 500;
+      letter-spacing: -0.02em;
+      line-height: 1;
+      margin-bottom: 14px;
+    }
+
+    .home-header .subtitle {
+      font-size: 1rem;
+      color: var(--muted);
+      font-weight: 300;
+    }
+
+    /* ── Section wrapper ── */
+    .home-section {
+      padding: 56px 0;
+      border-bottom: 1px solid var(--border);
+    }
+    .home-section:last-child { border-bottom: none; }
+
+    .section-label {
+      font-size: 0.7rem;
+      font-weight: 500;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      color: var(--hint);
+      margin-bottom: 28px;
+    }
+
+    /* ── Checklist ── */
+    .lists-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 32px;
+    }
+
+    @media (max-width: 720px) { .lists-grid { grid-template-columns: 1fr; } }
+
+    .list-panel {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      overflow: hidden;
+    }
+
+    .list-panel-header {
+      padding: 20px 24px 16px;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .list-panel-title {
+      font-size: 0.95rem;
+      font-weight: 500;
+    }
+
+    .list-progress {
+      font-size: 0.75rem;
+      color: var(--muted);
+    }
+
+    .list-panel-body { padding: 12px 0; }
+
+    .tier-label {
+      font-size: 0.68rem;
+      font-weight: 500;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: var(--hint);
+      padding: 8px 24px 4px;
+    }
+
+    .check-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 9px 24px;
+      cursor: pointer;
+      transition: background 0.15s;
+      user-select: none;
+    }
+
+    .check-item:hover { background: var(--bg); }
+
+    .check-item.done { opacity: 0.45; }
+    .check-item.done .check-label { text-decoration: line-through; }
+
+    .check-box {
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      border: 1.5px solid var(--border-md);
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.15s;
+    }
+
+    .check-item.done .check-box {
+      background: #166534;
+      border-color: #166534;
+    }
+
+    .check-tick {
+      display: none;
+      width: 8px;
+      height: 8px;
+    }
+
+    .check-item.done .check-tick { display: block; }
+
+    .check-label { font-size: 0.875rem; flex: 1; }
+
+    .badge {
+      font-size: 0.65rem;
+      font-weight: 500;
+      padding: 2px 7px;
+      border-radius: 20px;
+      flex-shrink: 0;
+    }
+
+    .badge-must { background: var(--danger-bg); color: var(--danger); }
+    .badge-sec  { background: var(--warn-bg);   color: var(--warn); }
+    .badge-nice { background: var(--accent-bg);  color: var(--accent); }
+
+    /* ── Inspiration nav cards ── */
+    .insp-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+      gap: 16px;
+    }
+
+    .insp-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 28px 24px;
+      cursor: pointer;
+      text-decoration: none;
+      color: inherit;
+      transition: all 0.2s ease;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .insp-card:hover {
+      border-color: var(--accent);
+      transform: translateY(-2px);
+    }
+
+    .insp-card-icon {
+      width: 40px;
+      height: 40px;
+      background: var(--accent-bg);
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .insp-card-icon svg { width: 20px; height: 20px; }
+
+    .insp-card h3 {
+      font-size: 0.975rem;
+      font-weight: 500;
+    }
+
+    .insp-card p {
+      font-size: 0.825rem;
+      color: var(--muted);
+      line-height: 1.5;
+    }
+
+    .insp-card-arrow {
+      margin-top: auto;
+      font-size: 0.8rem;
+      color: var(--hint);
+    }
+
+    /* ── Child page header ── */
+    .child-header {
+      padding: 56px 0 48px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .back-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 0.825rem;
+      color: var(--muted);
+      cursor: pointer;
+      border: none;
+      background: none;
+      padding: 0;
+      margin-bottom: 24px;
+      transition: color 0.15s;
+    }
+
+    .back-btn:hover { color: var(--text); }
+
+    .child-header h1 {
+      font-family: 'Cormorant Garamond', Georgia, serif;
+      font-size: clamp(2rem, 4vw, 3rem);
+      font-weight: 500;
+      letter-spacing: -0.02em;
+      margin-bottom: 8px;
+    }
+
+    .child-header p {
+      font-size: 0.9rem;
+      color: var(--muted);
+      font-weight: 300;
+    }
+
+    /* ── Link grid ── */
+    .link-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+      gap: 14px;
+    }
+
+    .link-card {
+      display: block;
+      padding: 20px 22px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      text-decoration: none;
+      color: inherit;
+      transition: all 0.2s ease;
+    }
+
+    .link-card:hover {
+      border-color: var(--accent);
+      transform: translateY(-2px);
+    }
+
+    .link-card h3 {
+      font-size: 0.95rem;
+      font-weight: 500;
+      margin-bottom: 4px;
+    }
+
+    .link-card p {
+      font-size: 0.825rem;
+      color: var(--muted);
+    }
+
+    /* ── Child section ── */
+    .child-section {
+      padding: 48px 0;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .child-section:last-child { border-bottom: none; padding-bottom: 80px; }
+
+    /* ── Pinterest ── */
+    .pinterest-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      gap: 16px;
+    }
+
+    .pin-card {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      padding: 22px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      text-decoration: none;
+      color: inherit;
+      transition: all 0.2s ease;
+    }
+
+    .pin-card:hover {
+      border-color: #E60023;
+    }
+
+    .pin-card.placeholder {
+      border-style: dashed;
+      opacity: 0.55;
+    }
+
+    .pin-card.placeholder:hover {
+      border-color: var(--border-md);
+      opacity: 0.7;
+    }
+
+    .pin-icon {
+      width: 44px;
+      height: 44px;
+      background: #FEE2E2;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+
+    .pin-info { display: flex; flex-direction: column; gap: 3px; }
+    .pin-title { font-size: 0.95rem; font-weight: 500; }
+    .pin-sub { font-size: 0.825rem; color: var(--muted); }
+
+    /* ── Footer ── */
+    footer {
+      padding: 40px 32px;
+      text-align: center;
+      color: var(--hint);
+      font-size: 0.75rem;
+      border-top: 1px solid var(--border);
+    }
+
+    /* ── Responsive ── */
+    @media (max-width: 640px) {
+      .container { padding: 0 16px; }
+      nav { padding: 0 16px; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ── Navigation ── -->
+  <nav>
+    <span class="nav-logo" onclick="goTo('home')">Casa</span>
+    <div class="nav-breadcrumb" id="breadcrumb"></div>
+  </nav>
+
+  <!-- ════════════════════════════
+       HOME PAGE
+  ════════════════════════════ -->
+  <div class="page active" id="page-home">
+    <div class="container">
+      <div class="home-header">
+        <h1>Casa</h1>
+        <p class="subtitle">Documentation &amp; inspiration for the new home</p>
+      </div>
+
+      <!-- Lists -->
+      <div class="home-section">
+        <div class="section-label">Move-in planner</div>
+        <div class="lists-grid">
+
+          <!-- Shopping List -->
+          <div class="list-panel">
+            <div class="list-panel-header">
+              <span class="list-panel-title">Shopping list</span>
+              <span class="list-progress" id="shop-prog">0 / 9 done</span>
+            </div>
+            <div class="list-panel-body" id="shopping-list">
+              <div class="tier-label">Must have</div>
+              <div class="check-item" data-id="mattress" onclick="toggleItem(this,'shop')"><div class="check-box"><svg class="check-tick" viewBox="0 0 8 8"><polyline points="1,4 3,6.5 7,1.5" fill="none" stroke="#fff" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div><span class="check-label">Mattress</span><span class="badge badge-must">must have</span></div>
+              <div class="check-item" data-id="bed" onclick="toggleItem(this,'shop')"><div class="check-box"><svg class="check-tick" viewBox="0 0 8 8"><polyline points="1,4 3,6.5 7,1.5" fill="none" stroke="#fff" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div><span class="check-label">Bed frame</span><span class="badge badge-must">must have</span></div>
+              <div class="check-item" data-id="couch" onclick="toggleItem(this,'shop')"><div class="check-box"><svg class="check-tick" viewBox="0 0 8 8"><polyline points="1,4 3,6.5 7,1.5" fill="none" stroke="#fff" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div><span class="check-label">Couch</span><span class="badge badge-must">must have</span></div>
+              <div class="check-item" data-id="washing-machine" onclick="toggleItem(this,'shop')"><div class="check-box"><svg class="check-tick" viewBox="0 0 8 8"><polyline points="1,4 3,6.5 7,1.5" fill="none" stroke="#fff" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div><span class="check-label">Washing machine</span><span class="badge badge-must">must have</span></div>
+              <div class="check-item" data-id="fridge" onclick="toggleItem(this,'shop')"><div class="check-box"><svg class="check-tick" viewBox="0 0 8 8"><polyline points="1,4 3,6.5 7,1.5" fill="none" stroke="#fff" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div><span class="check-label">Fridge</span><span class="badge badge-must">must have</span></div>
+              <div class="tier-label">Secondary</div>
+              <div class="check-item" data-id="dishwasher" onclick="toggleItem(this,'shop')"><div class="check-box"><svg class="check-tick" viewBox="0 0 8 8"><polyline points="1,4 3,6.5 7,1.5" fill="none" stroke="#fff" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div><span class="check-label">Dishwasher</span><span class="badge badge-sec">secondary</span></div>
+              <div class="check-item" data-id="dining-table" onclick="toggleItem(this,'shop')"><div class="check-box"><svg class="check-tick" viewBox="0 0 8 8"><polyline points="1,4 3,6.5 7,1.5" fill="none" stroke="#fff" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div><span class="check-label">Dining table</span><span class="badge badge-sec">secondary</span></div>
+              <div class="check-item" data-id="chairs" onclick="toggleItem(this,'shop')"><div class="check-box"><svg class="check-tick" viewBox="0 0 8 8"><polyline points="1,4 3,6.5 7,1.5" fill="none" stroke="#fff" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div><span class="check-label">Chairs</span><span class="badge badge-sec">secondary</span></div>
+              <div class="tier-label">Nice to have</div>
+              <div class="check-item" data-id="roomba" onclick="toggleItem(this,'shop')"><div class="check-box"><svg class="check-tick" viewBox="0 0 8 8"><polyline points="1,4 3,6.5 7,1.5" fill="none" stroke="#fff" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div><span class="check-label">Roomba</span><span class="badge badge-nice">nice to have</span></div>
+            </div>
+          </div>
+
+          <!-- To-do List -->
+          <div class="list-panel">
+            <div class="list-panel-header">
+              <span class="list-panel-title">To-do list</span>
+              <span class="list-progress" id="todo-prog">0 / 3 done</span>
+            </div>
+            <div class="list-panel-body" id="todo-list">
+              <div class="tier-label">Utilities &amp; logistics</div>
+              <div class="check-item" data-id="todo-gas" onclick="toggleItem(this,'todo')"><div class="check-box"><svg class="check-tick" viewBox="0 0 8 8"><polyline points="1,4 3,6.5 7,1.5" fill="none" stroke="#fff" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div><span class="check-label">Transfer gas &amp; electricity contract to new home</span></div>
+              <div class="check-item" data-id="todo-internet" onclick="toggleItem(this,'todo')"><div class="check-box"><svg class="check-tick" viewBox="0 0 8 8"><polyline points="1,4 3,6.5 7,1.5" fill="none" stroke="#fff" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div><span class="check-label">Transfer internet contract to new home</span></div>
+              <div class="check-item" data-id="todo-movers" onclick="toggleItem(this,'todo')"><div class="check-box"><svg class="check-tick" viewBox="0 0 8 8"><polyline points="1,4 3,6.5 7,1.5" fill="none" stroke="#fff" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div><span class="check-label">Book moving company</span></div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- Inspiration -->
+      <div class="home-section">
+        <div class="section-label">Inspiration</div>
+        <div class="insp-grid">
+
+          <div class="insp-card" onclick="goTo('italian-magazines')">
+            <div class="insp-card-icon">
+              <svg viewBox="0 0 20 20" fill="none" stroke="#8B6E52" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                <rect x="3" y="2" width="14" height="16" rx="2"/>
+                <line x1="7" y1="7" x2="13" y2="7"/>
+                <line x1="7" y1="10" x2="13" y2="10"/>
+                <line x1="7" y1="13" x2="10" y2="13"/>
+              </svg>
+            </div>
+            <h3>Italian Design Magazines</h3>
+            <p>Domus, Interni, Abitare, Casabella and more</p>
+            <span class="insp-card-arrow">9 publications →</span>
+          </div>
+
+          <div class="insp-card" onclick="goTo('general-inspiration')">
+            <div class="insp-card-icon">
+              <svg viewBox="0 0 20 20" fill="none" stroke="#8B6E52" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="10" cy="10" r="7"/>
+                <path d="M3 10h14M10 3a10 7 0 0 1 0 14M10 3a10 7 0 0 0 0 14"/>
+              </svg>
+            </div>
+            <h3>General Inspiration</h3>
+            <p>Dezeen, Houzz, Dwell, Architectural Digest and more</p>
+            <span class="insp-card-arrow">7 sources →</span>
+          </div>
+
+          <div class="insp-card" onclick="goTo('furniture-shopping')">
+            <div class="insp-card-icon">
+              <svg viewBox="0 0 20 20" fill="none" stroke="#8B6E52" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M2 7h16l-1.5 8H3.5L2 7z"/>
+                <path d="M5 7V5a5 5 0 0 1 10 0v2"/>
+              </svg>
+            </div>
+            <h3>Furniture &amp; Shopping</h3>
+            <p>Cassina, Kartell, HAY, Artemide and more</p>
+            <span class="insp-card-arrow">4 brands →</span>
+          </div>
+
+          <div class="insp-card" onclick="goTo('moodboards')">
+            <div class="insp-card-icon">
+              <svg viewBox="0 0 20 20" fill="none" stroke="#8B6E52" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                <rect x="2" y="2" width="7" height="7" rx="1.5"/>
+                <rect x="11" y="2" width="7" height="7" rx="1.5"/>
+                <rect x="2" y="11" width="7" height="7" rx="1.5"/>
+                <rect x="11" y="11" width="7" height="7" rx="1.5"/>
+              </svg>
+            </div>
+            <h3>Moodboards</h3>
+            <p>Pinterest boards — living room, kitchen, bedroom</p>
+            <span class="insp-card-arrow">3 boards →</span>
+          </div>
+
+        </div>
+      </div>
+    </div>
+    <footer>Last updated: March 2026</footer>
+  </div>
+
+
+  <!-- ════════════════════════════
+       CHILD: Italian Magazines
+  ════════════════════════════ -->
+  <div class="page" id="page-italian-magazines">
+    <div class="container">
+      <div class="child-header">
+        <button class="back-btn" onclick="goTo('home')">
+          <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M9 2L4 7l5 5"/></svg>
+          Back to home
+        </button>
+        <h1>Italian Design Magazines</h1>
+        <p>The definitive Italian voices on architecture, interiors, and design</p>
+      </div>
+      <div class="child-section">
+        <div class="link-grid">
+          <a href="https://www.domusweb.it/en.html" target="_blank" class="link-card"><h3>Domus</h3><p>Iconic since 1928. Architecture, design, art</p></a>
+          <a href="https://www.internimagazine.it" target="_blank" class="link-card"><h3>Interni</h3><p>Since 1954. Initiated FuoriSalone in 1990</p></a>
+          <a href="https://www.abitare.it" target="_blank" class="link-card"><h3>Abitare</h3><p>Architecture-focused since 1961</p></a>
+          <a href="https://casabellaweb.eu" target="_blank" class="link-card"><h3>Casabella</h3><p>Architecture since 1928</p></a>
+          <a href="https://www.ad-italia.it" target="_blank" class="link-card"><h3>AD Italia</h3><p>Condé Nast luxury interiors</p></a>
+          <a href="https://living.corriere.it" target="_blank" class="link-card"><h3>Living Corriere</h3><p>Design + lifestyle from Corriere della Sera</p></a>
+          <a href="https://www.casafacile.it" target="_blank" class="link-card"><h3>CASAfacile</h3><p>DIY projects, practical home decor</p></a>
+          <a href="https://www.elledecor.it" target="_blank" class="link-card"><h3>Elle Decor Italia</h3><p>Fashion-forward interiors</p></a>
+          <a href="https://www.villeecasali.com" target="_blank" class="link-card"><h3>Ville &amp; Casali</h3><p>Country living, gardens since 1990</p></a>
+        </div>
+      </div>
+    </div>
+    <footer>Casa — Italian Design Magazines</footer>
+  </div>
+
+
+  <!-- ════════════════════════════
+       CHILD: General Inspiration
+  ════════════════════════════ -->
+  <div class="page" id="page-general-inspiration">
+    <div class="container">
+      <div class="child-header">
+        <button class="back-btn" onclick="goTo('home')">
+          <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M9 2L4 7l5 5"/></svg>
+          Back to home
+        </button>
+        <h1>General Inspiration</h1>
+        <p>International platforms for architecture, interiors, and home design</p>
+      </div>
+      <div class="child-section">
+        <div class="link-grid">
+          <a href="https://www.dezeen.com" target="_blank" class="link-card"><h3>Dezeen</h3><p>Architecture + furniture lookbooks</p></a>
+          <a href="https://www.houzz.com" target="_blank" class="link-card"><h3>Houzz</h3><p>Millions of photos, create ideabooks</p></a>
+          <a href="https://www.dwell.com" target="_blank" class="link-card"><h3>Dwell</h3><p>Modern design, budget breakdowns</p></a>
+          <a href="https://www.architecturaldigest.com" target="_blank" class="link-card"><h3>Architectural Digest</h3><p>Luxury, celebrity homes</p></a>
+          <a href="https://www.apartmenttherapy.com" target="_blank" class="link-card"><h3>Apartment Therapy</h3><p>Small spaces, practical, real homes</p></a>
+          <a href="https://www.remodelista.com" target="_blank" class="link-card"><h3>Remodelista</h3><p>Minimal, Scandinavian-leaning</p></a>
+          <a href="https://design-milk.com" target="_blank" class="link-card"><h3>Design Milk</h3><p>Modern furniture, product design</p></a>
+        </div>
+      </div>
+    </div>
+    <footer>Casa — General Inspiration</footer>
+  </div>
+
+
+  <!-- ════════════════════════════
+       CHILD: Furniture & Shopping
+  ════════════════════════════ -->
+  <div class="page" id="page-furniture-shopping">
+    <div class="container">
+      <div class="child-header">
+        <button class="back-btn" onclick="goTo('home')">
+          <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M9 2L4 7l5 5"/></svg>
+          Back to home
+        </button>
+        <h1>Furniture &amp; Shopping</h1>
+        <p>Brands and shops for sourcing furniture and objects</p>
+      </div>
+      <div class="child-section">
+        <div class="link-grid">
+          <a href="https://www.artemide.com" target="_blank" class="link-card"><h3>Artemide</h3><p>Lighting design</p></a>
+          <a href="https://www.cassina.com" target="_blank" class="link-card"><h3>Cassina</h3><p>Italian furniture</p></a>
+          <a href="https://www.kartell.com" target="_blank" class="link-card"><h3>Kartell</h3><p>Contemporary furniture</p></a>
+          <a href="https://www.hay.dk" target="_blank" class="link-card"><h3>HAY</h3><p>Danish modern design</p></a>
+        </div>
+      </div>
+    </div>
+    <footer>Casa — Furniture &amp; Shopping</footer>
+  </div>
+
+
+  <!-- ════════════════════════════
+       CHILD: Moodboards
+  ════════════════════════════ -->
+  <div class="page" id="page-moodboards">
+    <div class="container">
+      <div class="child-header">
+        <button class="back-btn" onclick="goTo('home')">
+          <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M9 2L4 7l5 5"/></svg>
+          Back to home
+        </button>
+        <h1>Moodboards</h1>
+        <p>Pinterest boards collecting visual references by room</p>
+      </div>
+      <div class="child-section">
+        <div class="pinterest-grid">
+          <a href="https://www.pinterest.com/reallyrudepanda/home/" target="_blank" class="pin-card">
+            <div class="pin-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="#E60023"><path d="M12 0C5.373 0 0 5.373 0 12c0 5.084 3.163 9.426 7.627 11.174-.105-.949-.2-2.405.042-3.441.218-.937 1.407-5.965 1.407-5.965s-.359-.719-.359-1.782c0-1.668.967-2.914 2.171-2.914 1.023 0 1.518.769 1.518 1.69 0 1.029-.655 2.568-.994 3.995-.283 1.194.599 2.169 1.777 2.169 2.133 0 3.772-2.249 3.772-5.495 0-2.873-2.064-4.882-5.012-4.882-3.414 0-5.418 2.561-5.418 5.207 0 1.031.397 2.138.893 2.738.098.119.112.224.083.345l-.333 1.36c-.053.22-.174.267-.402.161-1.499-.698-2.436-2.889-2.436-4.649 0-3.785 2.75-7.262 7.929-7.262 4.163 0 7.398 2.967 7.398 6.931 0 4.136-2.607 7.464-6.227 7.464-1.216 0-2.359-.632-2.75-1.378l-.748 2.853c-.271 1.043-1.002 2.35-1.492 3.146C9.57 23.812 10.763 24 12 24c6.627 0 12-5.373 12-12S18.627 0 12 0z"/></svg></div>
+            <div class="pin-info"><span class="pin-title">Living Room</span><span class="pin-sub">View moodboard on Pinterest →</span></div>
+          </a>
+          <a href="#" class="pin-card placeholder">
+            <div class="pin-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="#B0A89F"><path d="M12 0C5.373 0 0 5.373 0 12c0 5.084 3.163 9.426 7.627 11.174-.105-.949-.2-2.405.042-3.441.218-.937 1.407-5.965 1.407-5.965s-.359-.719-.359-1.782c0-1.668.967-2.914 2.171-2.914 1.023 0 1.518.769 1.518 1.69 0 1.029-.655 2.568-.994 3.995-.283 1.194.599 2.169 1.777 2.169 2.133 0 3.772-2.249 3.772-5.495 0-2.873-2.064-4.882-5.012-4.882-3.414 0-5.418 2.561-5.418 5.207 0 1.031.397 2.138.893 2.738.098.119.112.224.083.345l-.333 1.36c-.053.22-.174.267-.402.161-1.499-.698-2.436-2.889-2.436-4.649 0-3.785 2.75-7.262 7.929-7.262 4.163 0 7.398 2.967 7.398 6.931 0 4.136-2.607 7.464-6.227 7.464-1.216 0-2.359-.632-2.75-1.378l-.748 2.853c-.271 1.043-1.002 2.35-1.492 3.146C9.57 23.812 10.763 24 12 24c6.627 0 12-5.373 12-12S18.627 0 12 0z"/></svg></div>
+            <div class="pin-info"><span class="pin-title">Kitchen</span><span class="pin-sub">Add Pinterest board URL</span></div>
+          </a>
+          <a href="https://uk.pinterest.com/reallyrudepanda/home-bedroom/" target="_blank" class="pin-card">
+            <div class="pin-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="#E60023"><path d="M12 0C5.373 0 0 5.373 0 12c0 5.084 3.163 9.426 7.627 11.174-.105-.949-.2-2.405.042-3.441.218-.937 1.407-5.965 1.407-5.965s-.359-.719-.359-1.782c0-1.668.967-2.914 2.171-2.914 1.023 0 1.518.769 1.518 1.69 0 1.029-.655 2.568-.994 3.995-.283 1.194.599 2.169 1.777 2.169 2.133 0 3.772-2.249 3.772-5.495 0-2.873-2.064-4.882-5.012-4.882-3.414 0-5.418 2.561-5.418 5.207 0 1.031.397 2.138.893 2.738.098.119.112.224.083.345l-.333 1.36c-.053.22-.174.267-.402.161-1.499-.698-2.436-2.889-2.436-4.649 0-3.785 2.75-7.262 7.929-7.262 4.163 0 7.398 2.967 7.398 6.931 0 4.136-2.607 7.464-6.227 7.464-1.216 0-2.359-.632-2.75-1.378l-.748 2.853c-.271 1.043-1.002 2.35-1.492 3.146C9.57 23.812 10.763 24 12 24c6.627 0 12-5.373 12-12S18.627 0 12 0z"/></svg></div>
+            <div class="pin-info"><span class="pin-title">Bedroom</span><span class="pin-sub">View moodboard on Pinterest →</span></div>
+          </a>
+        </div>
+      </div>
+    </div>
+    <footer>Casa — Moodboards</footer>
+  </div>
+
+
+  <script>
+    const pages = {
+      'home':               { el: 'page-home',               label: null },
+      'italian-magazines':  { el: 'page-italian-magazines',  label: 'Italian Design Magazines' },
+      'general-inspiration':{ el: 'page-general-inspiration',label: 'General Inspiration' },
+      'furniture-shopping': { el: 'page-furniture-shopping', label: 'Furniture & Shopping' },
+      'moodboards':         { el: 'page-moodboards',         label: 'Moodboards' },
+    };
+
+    const shopTotal = 9;
+    const todoTotal = 3;
+    const STORAGE_KEY = 'casa-checked';
+
+    function saveState() {
+      const checked = [];
+      document.querySelectorAll('.check-item.done').forEach((el, i) => {
+        checked.push(el.dataset.id);
+      });
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(checked));
+    }
+
+    function loadState() {
+      const raw = localStorage.getItem(STORAGE_KEY);
+      if (!raw) return;
+      const checked = JSON.parse(raw);
+      checked.forEach(id => {
+        const el = document.querySelector(`.check-item[data-id="${id}"]`);
+        if (el) el.classList.add('done');
+      });
+      updateProgress('shop');
+      updateProgress('todo');
+    }
+
+    function goTo(id) {
+      Object.values(pages).forEach(p => {
+        document.getElementById(p.el).classList.remove('active');
+      });
+      document.getElementById(pages[id].el).classList.add('active');
+
+      const bc = document.getElementById('breadcrumb');
+      if (id === 'home') {
+        bc.innerHTML = '';
+      } else {
+        bc.innerHTML = `<a onclick="goTo('home')">Home</a><span>/</span>${pages[id].label}`;
+      }
+
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+      history.pushState(null, '', '#' + id);
+    }
+
+    function toggleItem(el, listId) {
+      el.classList.toggle('done');
+      updateProgress(listId);
+      saveState();
+    }
+
+    function updateProgress(listId) {
+      if (listId === 'shop') {
+        const done = document.querySelectorAll('#shopping-list .check-item.done').length;
+        document.getElementById('shop-prog').textContent = done + ' / ' + shopTotal + ' done';
+      } else {
+        const done = document.querySelectorAll('#todo-list .check-item.done').length;
+        document.getElementById('todo-prog').textContent = done + ' / ' + todoTotal + ' done';
+      }
+    }
+
+    window.addEventListener('popstate', () => {
+      const hash = location.hash.replace('#', '') || 'home';
+      if (pages[hash]) goTo(hash);
+    });
+
+    const initHash = location.hash.replace('#', '');
+    if (initHash && pages[initHash]) goTo(initHash);
+
+    loadState();
+  </script>
+
+</body>
+</html>
